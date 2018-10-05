@@ -74,7 +74,7 @@ func UpdateTodoEndpoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
-// DeleteTodoEndPointLETE an existing movie
+// DeleteTodoEndPoint an existing movie
 func DeleteTodoEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var todo Todo
@@ -82,7 +82,7 @@ func DeleteTodoEndPoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	if err := dao.DeleteTodo(todo); err != nil {
+	if err := doa.DeleteTodo(todo); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -113,8 +113,9 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/todo", GetTodos).Methods("GET")
 	r.HandleFunc("/todo", CreateTodo).Methods("POST")
-	r.HandleFunc("/todo/{id}", FindTodoEndPoint).Methods("GET")
+	r.HandleFunc("/todo", CreateTodo).Methods("DELETE")
 	r.HandleFunc("/todo", UpdateTodoEndpoint).Methods("PUT")
+	r.HandleFunc("/todo/{id}", FindTodoEndPoint).Methods("GET")
 
 	//Lines here are to avoid the CORS issues.
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
