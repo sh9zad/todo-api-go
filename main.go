@@ -9,10 +9,12 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	. "github.com/sh9zad/todo-api-go/DataAccess"
+	. "github.com/sh9zad/todo-api-go/config"
 	. "github.com/sh9zad/todo-api-go/models"
 	"gopkg.in/mgo.v2/bson"
 )
 
+var config = Config{}
 var doa = TodosDataAccess{}
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +23,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 /**/
 func GetTodos(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "not implemented yet !")
+	todos, err := doa.FindAll()
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, todos)
 }
 
 // CreateTodo something
@@ -52,10 +60,19 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Write(response)
 }
 
+func init() {
+	config.Read()
+
+	doa.Server = config.Server
+	doa.Database = config.Database
+	doa.Connect()
+}
+
 func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/todo", GetTodos).Methods("GET")
+	r.HandleFunc("/todo", CreateTodo).Methods("POST")
 
 	//Lines here are to avoid the CORS issues.
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
