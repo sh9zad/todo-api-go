@@ -1,4 +1,4 @@
-package DataAccess
+package dataaccess
 
 import (
 	"log"
@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// TodosDataAccess the struct
 type TodosDataAccess struct {
 	Server   string
 	Database string
@@ -20,25 +21,32 @@ const (
 )
 
 // Connect Establish connection
-func (m *TodosDataAccess) Connect() {
-	session, err := mgo.Dial(m.Server)
+func (t *TodosDataAccess) Connect() {
+	session, err := mgo.Dial(t.Server)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db = session.DB(m.Database)
+	db = session.DB(t.Database)
 }
 
 //FindAll todos
-func (m *TodosDataAccess) FindAll() ([]Todo, error) {
+func (t *TodosDataAccess) FindAll() ([]Todo, error) {
 	var todos []Todo
 	err := db.C(COLLECTION).Find(bson.M{}).All(&todos)
 	return todos, err
 }
 
+// FindByID get the record.
+func (t *TodosDataAccess) FindByID(id string) (Todo, error) {
+	var todo Todo
+	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(id)).One(&todo)
+	return todo, err
+}
+
 // Insert todo
-func (m *TodosDataAccess) Insert(todo Todo) error {
+func (t *TodosDataAccess) Insert(todo Todo) error {
 	err := db.C(COLLECTION).Insert(&todo)
 	return err
 }

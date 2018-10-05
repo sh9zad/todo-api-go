@@ -8,8 +8,8 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	. "github.com/sh9zad/todo-api-go/DataAccess"
 	. "github.com/sh9zad/todo-api-go/config"
+	. "github.com/sh9zad/todo-api-go/dataaccess"
 	. "github.com/sh9zad/todo-api-go/models"
 	"gopkg.in/mgo.v2/bson"
 )
