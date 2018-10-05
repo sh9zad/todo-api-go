@@ -21,7 +21,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World")
 }
 
-/**/
+// GetTodos to return all the todos in the db
 func GetTodos(w http.ResponseWriter, r *http.Request) {
 	todos, err := doa.FindAll()
 	if err != nil {
