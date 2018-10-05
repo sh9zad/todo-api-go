@@ -50,3 +50,9 @@ func (t *TodosDataAccess) Insert(todo Todo) error {
 	err := db.C(COLLECTION).Insert(&todo)
 	return err
 }
+
+// UpdateTodo updated
+func (t *TodosDataAccess) UpdateTodo(todo Todo) error {
+	err := db.C(COLLECTION).Update(bson.M{"id": todo.ID}, &todo)
+	return err
+}

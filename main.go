@@ -59,11 +59,25 @@ func FindTodoEndPoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, movie)
 }
 
+// UpdateTodoEndpoint update
+func UpdateTodoEndpoint(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	var todo Todo
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	if err := doa.UpdateTodo(todo); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	respondWithJSON(w, code, map[string]string{"error": msg})
 }
 
-// respondWithJSON as
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 	w.Header().Set("Content-Type", "application/json")
@@ -85,6 +99,7 @@ func main() {
 	r.HandleFunc("/todo", GetTodos).Methods("GET")
 	r.HandleFunc("/todo", CreateTodo).Methods("POST")
 	r.HandleFunc("/todo/{id}", FindTodoEndPoint).Methods("GET")
+	r.HandleFunc("/todo", UpdateTodoEndpoint).Methods("PUT")
 
 	//Lines here are to avoid the CORS issues.
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
