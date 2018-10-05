@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	. "github.com/sh9zad/todo-api-go/DataAccess"
 	. "github.com/sh9zad/todo-api-go/models"
@@ -56,7 +57,11 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/todo", GetTodos).Methods("GET")
 
-	if err := http.ListenAndServe(":3060", r); err != nil {
+	//Lines here are to avoid the CORS issues.
+	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"})
+
+	if err := http.ListenAndServe(":3060", handlers.CORS(allowedOrigins, allowedMethods)(r)); err != nil {
 		log.Fatal(err)
 	}
 }
