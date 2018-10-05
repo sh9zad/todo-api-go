@@ -48,6 +48,17 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, todo)
 }
 
+// FindTodoEndPoint get the todo
+func FindTodoEndPoint(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	movie, err := doa.FindByID(params["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid Todo ID")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, movie)
+}
+
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	respondWithJSON(w, code, map[string]string{"error": msg})
 }
@@ -73,10 +84,13 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/todo", GetTodos).Methods("GET")
 	r.HandleFunc("/todo", CreateTodo).Methods("POST")
+	r.HandleFunc("/todo/{id}", FindTodoEndPoint).Methods("GET")
 
 	//Lines here are to avoid the CORS issues.
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
 	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"})
+
+	fmt.Println("Server started on port: 3060")
 
 	if err := http.ListenAndServe(":3060", handlers.CORS(allowedOrigins, allowedMethods)(r)); err != nil {
 		log.Fatal(err)

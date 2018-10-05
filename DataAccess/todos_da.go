@@ -41,7 +41,7 @@ func (t *TodosDataAccess) FindAll() ([]Todo, error) {
 // FindByID get the record.
 func (t *TodosDataAccess) FindByID(id string) (Todo, error) {
 	var todo Todo
-	err := db.C(COLLECTION).FindId(bson.ObjectIdHex(id)).One(&todo)
+	err := db.C(COLLECTION).Find(bson.M{"id": bson.ObjectIdHex(id)}).One(&todo)
 	return todo, err
 }
 
