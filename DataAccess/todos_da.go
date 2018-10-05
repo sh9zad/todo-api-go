@@ -56,3 +56,9 @@ func (t *TodosDataAccess) UpdateTodo(todo Todo) error {
 	err := db.C(COLLECTION).Update(bson.M{"id": todo.ID}, &todo)
 	return err
 }
+
+// DeleteTodo delete
+func (t *TodosDataAccess) DeleteTodo(todo Todo) error {
+	err := db.C(COLLECTION).Remove(&todo)
+	return err
+}
