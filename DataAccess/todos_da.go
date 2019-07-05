@@ -17,6 +17,7 @@ type TodosDataAccess struct {
 var db *mgo.Database
 
 const (
+	//something something.
 	COLLECTION = "todos"
 )
 
